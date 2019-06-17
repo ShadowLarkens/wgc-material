@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: node:10.15.2
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "a4:1e:bc:5b:60:cb:9f:34:e6:48:9b:a2:ab:61:bc:34"
+      - run:
+          name: Install dependencies
+          command: |
+            npm config set unsafe-perm true
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "ci-build@tigercat2000.dev"
+            git config user.name "ci-build"
+            npm install --dev
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Deploy to gh-pages
+          command: gh-pages --dotfiles --dist dist --message "[skip ci] Updates"
