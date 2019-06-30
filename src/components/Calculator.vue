@@ -49,7 +49,7 @@
             <v-list dense>
               <v-list-tile>
                 <v-list-tile-content class="subheader">Prey Weight:</v-list-tile-content>
-                <v-list-tile-content class="align-end title">{{preyWeight | round}} lb</v-list-tile-content>
+                <v-list-tile-content class="align-end title">{{preyWeightInt | round}} lb</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="subheader">Prey Adipose:</v-list-tile-content>
@@ -61,7 +61,7 @@
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="subheader">Pred's Starting Weight:</v-list-tile-content>
-                <v-list-tile-content class="align-end title">{{predWeight | round}} lb</v-list-tile-content>
+                <v-list-tile-content class="align-end title">{{predWeightInt | round}} lb</v-list-tile-content>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-content class="subheader">Absorbed Weight:</v-list-tile-content>
@@ -102,8 +102,8 @@ const preyFatRatio = [
 
 export default {
   data: () => ({
-    preyWeight: 140,
-    predWeight: 140,
+    preyWeight: "140",
+    predWeight: "140",
     preyFat: 2,
     preyFatLabels: [
       'Lithe',
@@ -120,14 +120,17 @@ export default {
     predEndWeight: null,
     wasteWeight: null
   }),
+  computed: {
+    preyWeightInt () { return parseInt(this.preyWeight) },
+    predWeightInt () { return parseInt(this.predWeight) }
+  },
   methods: {
     generateData () {
-      this.preyAdipose = this.preyWeight * ratio.WeightToAdipose * preyFatRatio[this.preyFat];
+      this.preyAdipose = this.preyWeightInt * ratio.WeightToAdipose * preyFatRatio[this.preyFat];
       this.preyKCal = ratio.BaseKCal + (this.preyAdipose * ratio.AdiposeToKCal);
       this.absorbedWeight = this.preyKCal * ratio.KCalToAdipose;
-      this.predEndWeight = this.predWeight + this.absorbedWeight;
-      this.wasteWeight = this.preyWeight * 0.16;
-      console.log(this);
+      this.predEndWeight = this.predWeightInt + this.absorbedWeight;
+      this.wasteWeight = this.preyWeightInt * 0.16;
     }
   },
   filters: {
